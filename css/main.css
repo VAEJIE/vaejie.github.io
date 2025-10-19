@@ -62,13 +62,11 @@ html {
 }
 
 body {
-  font-family: "Noto Sans SC", "Helvetica Neue", Arial, "Microsoft Yahei", "Hiragino Sans GB", sans-serif;
-  font-size: 18px; /* 设定一个舒适的基础字号 */
-  line-height: 1.75; /* 设定宽松的行距 */
-  color: #333; /* 使用柔和的深灰色作为主文字颜色 */
-  background-color: #f5f7fa; /* 使用非常浅的灰蓝色作为背景，大气且不刺眼 */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale; }
+  font: 18px/1.5 "Helvetica Neue", Arial, "Microsoft Yahei", "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", sans-serif;
+  color: #515151;
+  background-color: #fff;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%; }
 
 ::selection {
   background: #27408B; 
@@ -102,12 +100,11 @@ h3,
 h4,
 h5,
 h5 {
-  margin-top: 2.5em; /* 显著增加标题上方间距 */
-  margin-bottom: 1em; /* 增加标题下方间距 */
-    /* 使用我们新引入的、更清晰的字体 */
-  font-family: "Noto Sans SC", "Helvetica Neue", Arial, "Microsoft Yahei", sans-serif;
-  font-weight: 700; /* 统一使用粗体，让标题更醒目 */
-  color: #111; /* 使用更深的颜色 */
+  margin-top: 1.0em;
+  margin-bottom: .5em;
+  font-family: "ff-tisa-web-pro-1", "ff-tisa-web-pro-2", "Lucida Grande", "Hiragino Sans GB", "Hiragino Sans GB W3", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+  font-weight: lighter;
+  color: #333333;
   -webkit-font-smoothing: antialiased; }
 
 h1 {
@@ -121,23 +118,19 @@ h1 {
 h2 {
   font-size: 1.5em; 
   font-weight: bold;
-  /*background:#B9D3EE;*/
-  /*text-align: center;*/
 }
 
 h3 {
-  /* font-size: 1.2em; 
+  font-size: 1.2em; 
   text-indent: 4px; 
   border-radius: 4px; 
   padding: 6px 15px;
   margin-bottom: 20px;
   margin-top: 5px;
   background:#B9D3EE;
-  /*0px right, 5px botton, 5px fuzzy*/
-  /* box-shadow: 0px 5px 5px #9FB6CD;
+  box-shadow: 0px 5px 5px #9FB6CD;
   border-left: 6px solid #1874CD; 
-  position:relative; */
-  font-size: 1.4em;
+  position:relative;
 }
 
 h4 {
@@ -152,10 +145,11 @@ h5 {
 }
 
 p {
-  margin: 0 0 1.5em 0; /* 只保留段落下方的间距 */
-  padding-left: 0; /* 移除不必要的左内边距 */
-  font-size: 1.0em; /* 继承body的字号 */
-  line-height: 1.75; /* 继承body的行高 */
+  margin-bottom: 10px;
+  margin-top: 5px;
+  line-height: 1.7em; 
+  padding-left: 20px;
+  font-size: 16px;
 }
 
 strong {
@@ -169,7 +163,6 @@ blockquote {
   padding-bottom: 1px;
   padding-left: 10px;
   margin-left: 20px;
-
   font-family: "ff-tisa-web-pro-1", "ff-tisa-web-pro-2", "Lucida Grande", "Hiragino Sans GB", "Hiragino Sans GB W3", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
   font-weight: lighter;
   font-size: 1em;
@@ -192,17 +185,18 @@ ul {
   list-style-type: disc; }
 
 code {
-  color: #d63384; /* 使用更柔和、现代的代码颜色 */
-  padding: .2em .4em;
-  background: rgba(214, 51, 132, 0.07); /* 使用与文字颜色匹配的淡背景色 */
-  border-radius: 4px;
-  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
-  font-size: 0.9em; /* 微调大小，使其与正文协调 */
+  color: #000000;
+  padding: .1em .4em;
+  background: #e8f2fb;
+  border: 1px solid #c9e1f6;
+  border-radius: 3px;
+  font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+  font-size: 1.0em;
   vertical-align: bottom;
   word-wrap: break-word; }
 
 pre {
-  /* margin-bottom: 1.3em;
+  margin-bottom: 1.3em;
   padding: 1em 2.5%;
   background: #e8f2fb;
   border: 1px solid #c9e1f6;
@@ -211,18 +205,7 @@ pre {
   font-size: .9em;
   font-weight: normal;
   line-height: 1.3em;
-  overflow: scroll; }*/
-  display: block;
-  padding: 1.2em 1.5em; /* 增大内边距 */
-  margin: 30px 0; /* 增大外边距 */
-  font-size: 14px; /* 增大代码字号 */
-  line-height: 1.6;
-  word-break: break-all;
-  word-wrap: break-word;
-  color: #333;
-  background-color: #f6f8fa;
-  border: 1px solid #e1e4e8;
-  border-radius: 6px; /* 增大圆角 */}
+  overflow: scroll; }
 pre code {
   padding: 0;
   background: none;
@@ -413,17 +396,12 @@ img::-moz-selection {
 
   .content-wrapper {
     z-index: 800;
-    width: 100%; /* 让内容区占据全部宽度 */
-    margin-left: 0; /* 取消左边距 */
-    padding: 0 20px; /* 为两侧添加一点边距 */
-    box-sizing: border-box; /* 确保内边距不会撑大容器 */}
+    width: 70%;
+    margin-left: 30%; }
 
   .content-wrapper__inner {
-    /*margin: 0 10%;*/
     margin-right: 60px;
     padding: 50px 0; 
-    /*margin: 0 auto; */
-    /*width: 700px;*/
   }
 
   .footer {
@@ -475,30 +453,7 @@ img::-moz-selection {
 
   .post-meta__date span {
     margin: 0px;
-    /*margin-right: .5em; */
   }
-
-/*  .post-meta__tags {
-    margin-left: .2em; 
-    background-color: #efefef;
-    border-width: 1px;
-    border-color: #eee;
-    color: #333;
-    font-size: 2.0em;
-  }
-*/
- /* .post-meta__author {
-    margin-left: 1.5em; 
-  }
-
-  .post-meta__avatar {
-    display: inline-block;
-    width: 22px;
-    height: 22px;
-    margin: 0 .3em -.4em 0;
-    border: none;
-    box-shadow: none; 
-  }*/
 
   .post img {
     max-width: 100%;
@@ -540,7 +495,7 @@ img::-moz-selection {
     -webkit-font-smoothing: antialiased; }
 
   .panel-cover {
-    display: none;
+    display: block;
     position: fixed;
     z-index: 900;
     width: 100%;
@@ -761,7 +716,6 @@ img::-moz-selection {
     width: 100%;
     border-color: #666;
     color: #666;
-    /*opacity: .8; */
   }
 
   .navigation__item a:hover {
@@ -770,7 +724,6 @@ img::-moz-selection {
 
   .navigation__item_social {
     display: inline-block;
-    /*margin-right: 20px;*/
     width: 50px;
   }
   .navigation__item_social a {
@@ -838,18 +791,26 @@ img::-moz-selection {
     display: inline-block;
   }
   .post-list li {
-    list-style: none;
-    background-color: #ffffff;
-    padding: 25px 30px;
-    margin-bottom: 25px;
-    border-radius: 12px; /* 更大的圆角，更现代 */
-    border: 1px solid #eef2f8;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    transition: all 0.3s ease;
+    margin: 0 0 2.2em 0;
+    float: left;
+    width: 100%;
+    border-radius: 8px;
+
+    -moz-box-shadow:4px 4px 4px #efefef, 
+    -4px -4px 4px #efefef, 
+    4px -4px 4px #efefef, 
+    -4px 4px 4px #efefef; 
+    -webkit-box-shadow:4px 4px 4px #efefef, 
+    -4px -4px 4px #efefef, 
+    4px -4px 4px #efefef, 
+    -4px 4px 4px #efefef; 
+    box-shadow:4px 4px 4px #efefef, 
+    -4px -4px 4px #efefef, 
+    4px -4px 4px #efefef, 
+    -4px 4px 4px #efefef;
   }
   .post-list li:hover {
-    /* transform:scale(1.01,1.01); */
-    /* -moz-box-shadow:4px 4px 4px #c9e1f6, 
+    -moz-box-shadow:4px 4px 4px #c9e1f6, 
     -4px -4px 4px #c9e1f6, 
     4px -4px 4px #c9e1f6, 
     -4px 4px 4px #c9e1f6; 
@@ -860,11 +821,7 @@ img::-moz-selection {
     box-shadow:4px 4px 4px #c9e1f6, 
     -4px -4px 4px #c9e1f6, 
     4px -4px 4px #c9e1f6, 
-    -4px 4px 4px #c9e1f6; */
-    /*background-color: #F5FFFA; */
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-    border-color: #dfe7f3;
+    -4px 4px 4px #c9e1f6;
   }
 
   .post-list li:last-child hr {
@@ -878,15 +835,15 @@ img::-moz-selection {
     line-height: 1.3em;
   }
   .post-list__post-title a {
-   color: #2c3e50; /* 使用更沉稳的标题颜色 */
-  padding: 0; /* 移除内边距 */
-  transition: color 0.3s ease;
+   color: #333333; 
+   padding-top: 5px;
+   padding-left: 10px;
   }
   .post-list__post-title a:hover {
-    color: #007bff; /* 鼠标悬停时变为蓝色 */
-  background-color: transparent; /* 移除悬停背景色 */
+    color: #000000; 
+    background-color: #FAFAFA;
   }
-}
+
 
 .post-list__meta {
   display: block;
@@ -918,7 +875,6 @@ img::-moz-selection {
 }
 
 .post-list__meta--tags {
-  
   height: 19px;
   width: 10px;
   margin-top: 4px;
@@ -938,8 +894,6 @@ img::-moz-selection {
 
 .post-list-icon-mate {
   height: 20px;
-  /*width: 20px;*/
-  /*background-size: 100% 100%;*/
   padding-top: 0px;
   padding-bottom: 0px;
   margin-top: 2px;
@@ -1027,7 +981,7 @@ input[type="tel"]::-moz-placeholder {
 input[type="text"]:-moz-placeholder,
 input[type="password"]:-moz-placeholder,
 input[type="datetime"]:-moz-placeholder,
-input[type="datetime-local"]:-moz-placeholder,
+input[type-="datetime-local"]:-moz-placeholder,
 input[type="date"]:-moz-placeholder,
 input[type="month"]:-moz-placeholder,
 input[type="time"]:-moz-placeholder,
@@ -1071,7 +1025,7 @@ input[type="tel"]:-ms-input-placeholder {
 }
 .cover-navigation .navigation {
   display: block;
-  width: 100%;      
+  width: 100%;       
   margin-left: 0px;
   text-align: center;
 }
@@ -1377,7 +1331,6 @@ body {
       position: relative;
       width: 100px;
       height: 100px;
-      /*margin-top: 20px;*/
       border-radius: 50%;
   }
   .ih-item.circle {
