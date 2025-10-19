@@ -90,3 +90,20 @@
 .xml .hljs-cdata {
   opacity: 0.5;
 }
+
+pre {
+  display: block;
+  padding: 1.2em 1.5em;
+  margin: 30px 0;
+  font-size: 15px; /* 增大代码字号，让代码更清晰 */
+  line-height: 1.6;
+  word-break: break-all;
+  word-wrap: break-word;
+  color: #333;
+  background-color: #f6f8fa;
+  border: 1px solid #e1e4e8;
+  border-radius: 8px; /* 统一圆角风格 */
+  overflow: auto;
+  -webkit-font-smoothing: initial; /* 代码字体不需要平滑处理 */
+  -moz-osx-font-smoothing: initial;
+}
