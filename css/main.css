@@ -791,7 +791,7 @@ img::-moz-selection {
     display: inline-block;
   }
   .post-list li {
-    margin: 0 0 2.2em 0;
+    margin: 0 0 1.5em 0;
     float: left;
     width: 100%;
     border-radius: 8px;
