@@ -74,4 +74,3 @@ Q，K，V全来自上一层解码器的输出
 ![alt text](/images/posts/论文项目/Postional Encoding.png)
 
 
-
