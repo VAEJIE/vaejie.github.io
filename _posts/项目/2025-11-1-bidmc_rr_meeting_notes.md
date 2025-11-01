@@ -4,44 +4,41 @@ title: "cmssl复现每日记录"
 description: ""
 categories: "项目"
 ---
-# BIDMC_RR 微调实验总结
 
-## 1. 训练模式差异与损失曲线解读
+bidmchr和rr：
 
-| 编号 | 训练配置 | 关键超参 / 损失函数 | Loss 走势（前几轮 → 最佳 → 早停时） | 验证集表现小结 |
-| ---- | -------- | ------------------- | ----------------------------------- | --------------- |
-| A | `full_finetuning` + `MSELoss`（`lr=1e-4`, `backbone_lr=1e-5`, `weight_decay=1e-4`） | 损失函数保持为原始 `MSELoss` | Epoch1: Train 1.078, Val 0.724 → Epoch2: Train 0.995, Val 0.747（最佳 Val MAE≈2.425）→ 之后 Val Loss 快速上涨，Epoch7 提前停止 | 快速过拟合；Val/Test MAE ≈ 2.42 / 2.62 |
-| B | `linear_probing` + `MSELoss`（冻结 backbone，`lr=1e-4`） | 仅训练 head；backbone 冻结 | Epoch1: Train 1.025, Val 0.775 → Epoch8: Train 0.628, Val 0.506（最佳 Val MAE≈2.243）→ Loss 稳定在 ~0.62 / 0.51，Epoch15 早停 | 最稳定；Val/Test MAE ≈ 2.24 / 2.37 |
-| C | `full_finetuning` + `MSELoss`（`lr=5e-5`, `backbone_lr=5e-6`, `weight_decay=1e-3`） | 更强正则尝试 | Epoch1: Train 1.026, Val 0.757 → Epoch5: Train 0.932, Val 0.676（最佳 Val MAE≈2.466）→ Epoch8 开始 Val Loss 激增至 >1.3，Epoch10 强制停止 | 仍然过拟合，甚至早停后 Test MAE ≈ 3.82 |
-
-### 1.1 Loss 数值为何看似“偏大”
-
-1. **标签已做 z-score 标准化**：脚本先对呼吸率标签做 `mean/std` 归一化，Loss 的 0.6 / 0.5 其实是标准化空间里的均方误差。
-2. **换算回原始单位**：
-   - `bidmc_rr` 训练集标签标准差为 **4.43**。
-   - 若标准化 Loss = 0.52，则原始 RMSE ≈ `sqrt(0.52) × 4.43 ≈ 3.2`，MAE ≈ `0.52 × 4.43 ≈ 2.3`。
-   - 日志同步打印的 `Val MAE / Test MAE`（原空间）分别约 2.2~2.6，与换算完全一致。
-3. **Val Loss 早于 Train Loss 下降并更低**：验证集标签标准差更小（3.86），且验证阶段关闭 Dropout/BN 的噪声，导致 Val Loss 常常比训练 Loss 略低，这在正常范围内。
-
-## 2. 标签统计（用于解释 HR 与 RR Loss 曲线差异）
-
-| 数据集 | Split | 均值 | 标准差 | 极值 |
-| ------ | ----- | ---- | ------ | ---- |
-| `bidmc_rr` | train | 17.22 | **4.43** | 0.0 ~ 36.0 |
-| `bidmc_hr` | train | 88.12 | **11.76** | 52.2 ~ 131.2 |
-
-> **解释**：HR 标签方差远大于 RR。标准化后 HR 任务的误差被“压缩”得更厉害，loss 很容易降到 <0.1；RR 标签方差小，同样的 2~3 单位误差在标准化空间里要表现为 0.5~0.6 的损失值，这属于数据尺度差异，而非训练失败。
-
-## 3. 会议汇报要点
-
-1. **预训练背景**：直接使用师兄提供的 `jtwbio_encoder_full_weight_ppg_large` 权重，没有重新训练 encoder / tokenizer。
-2. **两条主要路线**：
-   - `linear_probing + MSELoss`（仅训练 head） → 最稳定，Val/Test MAE ≈ 2.24 / 2.37。
-   - `full_finetuning + MSELoss`（解冻全部参数） → 最佳 Val MAE ≈ 2.42，但很快过拟合；调低学习率和加 weight decay 后仍无改善。
-3. **Loss 数值解读**：日志里的 0.6 / 0.5 来自标准化空间，应配合原空间 `Val/Test MAE` 解读；验证 loss 稍低属于正常；与 HR 任务不同是因为标签尺度差。
-4. **后续计划建议**：
-   - 对 RR 任务优先采用 `linear_probing` 作为 baseline；
-   - 若需探索 full finetuning，考虑只解冻后几层或改用更鲁棒的损失（如 Smooth L1），并配合更严格的正则；
-   - 在组会中强调“预训练任务与 RR 特征差异导致线性 probing 更稳定、full finetuning 易扭曲表示”。
+从图表和统计数据中可以清晰地看到：
+数值范围 (Scale) 差异巨大：
+心率 (bidmc_hr) 的值主要分布在 70-110 bpm 之间。
+呼吸率 (bidmc_rr) 的值则集中在 10-25 breaths/min 之间。
+离散程度 (Standard Deviation) 差异显著：
+心率的标准差为 11.76，数据分布更宽。
+呼吸率的标准差仅为 4.43，数据分布非常集中。
+这完美地印证了我们之前的分析：由于呼吸率的标准差远小于心率，在进行 Z-score 标准化后，一个相同的物理误差（比如预测错了 2 次/分钟）在呼吸率任务中会被放大，从而导致其 Loss 值在数值上远大于心率任务。
+这再次说明，你观察到的 Loss 现象是正常的，完全由数据本身的尺度特性决定。
 
 
+ppgdaliahr和rr：
+
+这次的对比更加惊人：
+心率 (ppg_dalia_hr):
+均值: 91.78 bpm
+标准差: 23.18
+分布非常广泛，涵盖了从静息到运动的各种心率状态，这完全符合 PPG-DaLiA 数据集采集于真实活动场景的特点。
+呼吸率 (ppg_dalia_rr):
+均值: 0.27 breaths/sec (约 16.2 breaths/min)
+标准差: 0.11
+数据极度集中在一个非常窄的范围内。
+核心结论：
+ppg_dalia 数据集中 HR 和 RR 的尺度差异比 bidmc 数据集还要夸张。HR 的标准差 (23.18) 大约是 RR (0.11) 的 210倍！
+这意味着，当你微调这些任务时，如果使用相同的 MSELoss，对于同样的物理误差，ppg_dalia_rr 任务的 Loss 值在数值上将会是 ppg_dalia_hr 的数万倍。这是一个非常重要的发现，可以指导你为这两个任务设置截然不同的训练策略和评估标准。
+
+
+
+uci'：
+该图将 UCI SBP（收缩压）与 UCI DBP（舒张压）的训练/验证/测试标签合并后一起展示，曲线加了核密度估计，读起来很直观。
+标签分布核心信息
+SBP（收缩压）：共 410,183 条样本，取值约 70~199 mmHg，均值 131.53、标准差 22.00。
+分布宽，呈典型长尾，说明高压样本占比不低，因此后续做 Z-score 时会把差异拉平一些。
+DBP（舒张压）：同样 410,183 条样本，取值约 50~130 mmHg，均值 66.72、标准差 10.91。
+分布集中得多，意味着相同的物理误差在标准化后会显得更大，这一点跟你之前诊断 RR 任务时的结论是一样的。
