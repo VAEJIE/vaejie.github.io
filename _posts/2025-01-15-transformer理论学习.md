@@ -78,3 +78,12 @@ q1 * k1 = score1 ， q1 * k2 = score2， ...  q1 * kn = socren
 
 
 # 位置编码
+![alt text]({C8141567-596E-45B0-A55A-97160A418CBD}.png)
+
+# 残差
+![alt text]({25913712-3D38-421B-BE3D-9442A2A8B76F}.png)
+向量细节可视化：
+![alt text]({90A19E94-AB10-4CE2-B29D-DF3DACEC8BD5}.png)
+# 层归一化
+**不是在一批数据（batch）之间进行比较，而是在一个词向量的内部维度之间进行比较和缩放，与相邻的词向量无关，与批次里有多少个patch无关（BN就相反，批归一化BN是看一个batch内的所有patch的一个维度，但是当patch很少时，BN就没用了，而且也不适用于可变长度）**
+
