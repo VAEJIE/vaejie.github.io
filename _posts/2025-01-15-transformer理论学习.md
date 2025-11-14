@@ -5,43 +5,54 @@ categories: [项目]
 tags: [transformer, 深度学习]
 description: Transformer 模型的理论学习笔记
 ---
+## trans出来之前：
+### 无注意力的RNN：  
+        - encoder ： 把数据都压缩成一个*固定大小*的向量
+        - decoder ： 根据这个向量去生成
+### 有注意力的RNN：
+        - encoder ： n个词有n个输出向量h1、h2...hn ，不再压缩成一个固定大小的向量
+        - decoedr ： 将当前的query与所有输入h1、h2...hn进行相似度比较，动态计算出注意力权重(通过softmax)
 
-# Transformer 理论学习
+-----------------------
+## 从 attention 到 self-attention
+![alt text]({D610D85E-28F6-4329-A365-CA14C3DB0D77}.png)
 
-这是关于 Transformer 模型的学习笔记。
 
-## 什么是 Transformer？
+### 词嵌入层：
+### 数据流： 
+#### 1.输入： 
+**实际处理时不会只处理一个patch，而是把成百上千个patch包装成一个batch来进行并行计算。**
+        >batch_size = 32 一次处理32个patch
+        >Input: [32,100] 含义： 我们有32个独立的 patch，每个 patch 都是一个包含100个采样点的一维向量
+#### 2.嵌入层：
+```
+torch.nn.Linear(in_features=100, out_features=512)
+```
+权重矩阵W   形状[100,512]    共512000个参数
+偏置b       形状[512]
+#### 3.计算
+$Output = Input \cdot W + b$
+形状[32,512]       [batch_size,out_features]
 
-Transformer 是一种基于注意力机制的神经网络架构，由 Google 在 2017 年的论文 "Attention is All You Need" 中提出。
 
-## 核心组件
+------------
 
-### 1. 自注意力机制（Self-Attention）
+## 自注意力的非矩阵计算
+### 1.初始化Wq、Wk、Wv
+每个embedding都有三个向量 q  k  v （这三个的维度一般都小于embedding的维度）
+![alt text]({09745540-E93D-4C0A-996B-30E381D6704C}.png)
+q1 = x1 * Wq
+k1 = x1 * Wk
+v1 = x1 * Wv
+### 2.注意力评分
+q1 * k1 = score1 ， q1 * k2 = score2， ...  q1 * kn = socren
+![alt text]({6710002B-0966-495A-BCF3-2E118F9091F8}.png)
+然后就是除以向量维度的平方根
+![alt text]({D739C936-1798-458A-A518-EC57F92C2DEE}.png)
+得到**“关注度权重”**     eg:weight_1 =  [0.55,0.21,...,0.1]总和为1
 
-自注意力机制允许模型在处理序列时，关注序列中不同位置的信息。
+将关注度权重 * V   得到**注意力表示**（上下文向量）  
+加权求和
+![alt text]({2223D562-6185-47FC-80E6-F81EC8B3D81A}.png)
 
-### 2. 位置编码（Positional Encoding）
-
-由于 Transformer 没有循环或卷积结构，需要位置编码来理解序列的顺序。
-
-### 3. 编码器-解码器架构
-
-Transformer 采用编码器-解码器架构，编码器处理输入序列，解码器生成输出序列。
-
-## 优势
-
-- 并行计算能力强
-- 长距离依赖建模能力好
-- 训练效率高
-
-## 应用
-
-Transformer 架构被广泛应用于：
-- 自然语言处理（NLP）
-- 计算机视觉（CV）
-- 语音识别
-- 推荐系统
-
----
-
-*持续更新中...*
+## 自注意力的矩阵计算
