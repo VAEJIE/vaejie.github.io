@@ -14,7 +14,7 @@ description: Transformer 模型的理论学习笔记
         - decoedr ： 将当前的query与所有输入h1、h2...hn进行相似度比较，动态计算出注意力权重(通过softmax)
 
 -----------------------
-## 从 attention 到 self-attention
+# 从 attention 到 self-attention
 ![alt text]({D610D85E-28F6-4329-A365-CA14C3DB0D77}.png)
 
 
@@ -38,7 +38,8 @@ $Output = Input \cdot W + b$
 ------------
 
 ## 自注意力的非矩阵计算
-### 1.初始化Wq、Wk、Wv
+随机初始化Wq、Wk、Wv
+### 1.逐个计算，生成q、k、v
 每个embedding都有三个向量 q  k  v （这三个的维度一般都小于embedding的维度）
 ![alt text]({09745540-E93D-4C0A-996B-30E381D6704C}.png)
 q1 = x1 * Wq
@@ -51,8 +52,16 @@ q1 * k1 = score1 ， q1 * k2 = score2， ...  q1 * kn = socren
 ![alt text]({D739C936-1798-458A-A518-EC57F92C2DEE}.png)
 得到**“关注度权重”**     eg:weight_1 =  [0.55,0.21,...,0.1]总和为1
 
+### 3.
 将关注度权重 * V   得到**注意力表示**（上下文向量）  
 加权求和
 ![alt text]({2223D562-6185-47FC-80E6-F81EC8B3D81A}.png)
 
 ## 自注意力的矩阵计算
+### 1.直接矩阵点积
+
+### 2.一个公式解决
+
+----------------
+
+#多头注意力机制
